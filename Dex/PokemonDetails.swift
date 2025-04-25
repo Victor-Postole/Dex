@@ -19,7 +19,7 @@ struct PokemonDetails: View {
         ScrollView {
             VStack {
                 ZStack {
-                    Image(.normalgrasselectricpoisonfairy)
+                    Image(pokemon.background)
                         .resizable()
                         .scaledToFit()
                         .shadow(color: .black, radius: 6)
@@ -31,6 +31,7 @@ struct PokemonDetails: View {
                             .scaledToFit()
                             .padding(.top, 50)
                             .shadow(color: .black, radius: 6)
+                            .frame(width: 300, height:300)
                     }placeholder: {
                         ProgressView()
                     }
