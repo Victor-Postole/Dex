@@ -95,7 +95,7 @@ struct ContentView: View {
                                 }
                             }
                             .swipeActions(edge: .leading){
-                                Button(pokemon.favorite ? "Remove from Favorites": "Add to favorties", systemImage: "star") {
+                                Button(pokemon.favorite ? "Remove from Favorites": "Add to favorties", systemImage: filterByFavorites ? "star.fill" : "star") {
                                     pokemon.favorite.toggle()
                                     
                                     do {
@@ -132,7 +132,7 @@ struct ContentView: View {
                     pokeIndex.nsPredicate = dynamicPredicate
                 }
                 .navigationDestination(for: Pokemon.self){pokemon in
-                    Text(pokemon.name ?? "no name")
+                    PokemonDetails().environmentObject(pokemon)
                 }
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
