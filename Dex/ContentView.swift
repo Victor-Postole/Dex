@@ -12,6 +12,8 @@ struct ContentView: View {
    
     @Environment(\.managedObjectContext) private var viewContext
     
+    @FetchRequest<Pokemon>(sortDescriptors: [], animation: .default) private var allPokemon
+    
     @FetchRequest<Pokemon>(sortDescriptors: [SortDescriptor( \.id)], animation: .default) private var pokeIndex
 
     
@@ -40,7 +42,7 @@ struct ContentView: View {
     
     var body: some View {
         
-        if pokeIndex.isEmpty {
+        if allPokemon.isEmpty {
             ContentUnavailableView{
                 Label("No Pokemon", image: .nopokemon)
             }description: {
@@ -92,10 +94,22 @@ struct ContentView: View {
                                     }
                                 }
                             }
+                            .swipeActions(edge: .leading){
+                                Button(pokemon.favorite ? "Remove from Favorites": "Add to favorties", systemImage: "star") {
+                                    pokemon.favorite.toggle()
+                                    
+                                    do {
+                                        try viewContext.save()
+                                    }catch {
+                                        print(error)
+                                    }
+                                }.tint(pokemon.favorite ? .gray : .yellow)
+
+                            }
                         }
                         
                     }footer: {
-                        if pokeIndex.count < 151 {
+                        if allPokemon.count < 151 {
                             ContentUnavailableView{
                                 Label("Missing pokemon", image: .nopokemon)
                             }description: {
@@ -131,7 +145,7 @@ struct ContentView: View {
                     }
                 }
             }.task {
-                getPokemon()
+                getPokemon(from: pokeIndex.count + 1)
             }
         }
     }
