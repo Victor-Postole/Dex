@@ -23,17 +23,27 @@ struct PokemonDetails: View {
                         .resizable()
                         .scaledToFit()
                         .shadow(color: .black, radius: 6)
-                    
-                    AsyncImage(url: pokemon.sprite) { image in
-                        image
-                            .interpolation(.none)
+                 
+                    if pokemon.sprite == nil || pokemon.shiny == nil {
+                        
+                        AsyncImage(url: showShiny ? pokemon.shinyURL  : pokemon.spriteURL) { image in
+                            image
+                                .interpolation(.none)
+                                .resizable()
+                                .scaledToFit()
+                                .padding(.top, 50)
+                                .shadow(color: .black, radius: 6)
+                                .frame(width: 300, height:300)
+                        }placeholder: {
+                            ProgressView()
+                        }
+                    }else {
+                        (showShiny ? pokemon.shinyImage : pokemon.spriteImage)
                             .resizable()
                             .scaledToFit()
                             .padding(.top, 50)
                             .shadow(color: .black, radius: 6)
                             .frame(width: 300, height:300)
-                    }placeholder: {
-                        ProgressView()
                     }
                     
                     
@@ -78,6 +88,16 @@ struct PokemonDetails: View {
             Stats(pokemon: pokemon)
         }
         .navigationTitle(pokemon.name!.capitalized)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showShiny.toggle()
+                } label : {
+                    Image(systemName: showShiny ? "want.and.stars" : "wand.and.stars.inverse")
+                        .tint(showShiny ? .yellow : .primary)
+                }
+            }
+        }
     }
 }
 

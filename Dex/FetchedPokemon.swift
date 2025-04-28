@@ -17,8 +17,8 @@ struct FetchedPokemon: Decodable {
     let specialAttack: Int16
     let specialDefense: Int16
     let speed: Int16
-    let sprite: URL
-    let shiny: URL
+    let spriteURL : URL
+    let shinyURL: URL
     
        init(from decoder: Decoder) throws {
            let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -36,6 +36,10 @@ struct FetchedPokemon: Decodable {
 
                let type = try typeContainer.decode(String.self, forKey: .name)
                decodedTypes.append(type)
+           }
+           
+           if decodedTypes.count == 2 && decodedTypes[0] == "normal" {
+               decodedTypes.swapAt(0, 1)
            }
            
            types = decodedTypes
@@ -59,8 +63,8 @@ struct FetchedPokemon: Decodable {
            
            let spriteContainer = try container.nestedContainer(keyedBy: CodingKeys.SpriteKeys.self, forKey: .sprites)
            
-           sprite = try spriteContainer.decode(URL.self, forKey: .sprite)
-           shiny = try spriteContainer.decode(URL.self, forKey: .shiny)
+           spriteURL = try spriteContainer.decode(URL.self, forKey: .spriteURL)
+           shinyURL = try spriteContainer.decode(URL.self, forKey: .shinyURL)
        }
 
        // Define the coding keys that map the properties to the JSON keys
@@ -92,8 +96,8 @@ struct FetchedPokemon: Decodable {
            }
            
            enum SpriteKeys: String, CodingKey {
-               case sprite = "frontDefault"
-               case shiny = "frontShiny"
+               case spriteURL = "frontDefault"
+               case shinyURL = "frontShiny"
            }
        }
 }

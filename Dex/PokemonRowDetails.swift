@@ -16,14 +16,24 @@ struct PokemonRowDetails: View {
 
     var body: some View {
         NavigationLink(value: pokemon){
-            AsyncImage(url: pokemon.sprite) { image in
+            
+            if pokemon.sprite  == nil {
                 
-                image.resizable()
+                AsyncImage(url: pokemon.spriteURL) { image in
+                    
+                    image.resizable()
+                        .scaledToFit()
+                } placeholder: {
+                    ProgressView()
+                }
+                .frame(width: 100, height: 100)
+            }else{
+                pokemon.spriteImage
+                    .resizable()
                     .scaledToFit()
-            } placeholder: {
-                ProgressView()
+                    .frame(width: 100, height: 100)
             }
-            .frame(width: 100, height: 100)
+        
             
             VStack(alignment: .leading) {
                 HStack {

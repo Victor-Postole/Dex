@@ -64,7 +64,7 @@ struct ContentView: View {
                         }
                         
                     }footer: {
-                        if allPokemon.count < 151 {
+                        if allPokemon.isEmpty {
                             ContentUnavailableView{
                                 Label("Missing pokemon", image: .nopokemon)
                             }description: {
@@ -121,17 +121,37 @@ struct ContentView: View {
                     pokemon.specialAttack = fetchedPokemon.specialAttack
                     pokemon.specialDefense = fetchedPokemon.specialDefense
                     pokemon.speed = fetchedPokemon.speed
-                    pokemon.sprite = fetchedPokemon.sprite
-                    pokemon.shiny = fetchedPokemon.shiny
+                    pokemon.spriteURL = fetchedPokemon.spriteURL
+                    pokemon.shinyURL = fetchedPokemon.shinyURL
+                    pokemon.spriteURL = fetchedPokemon.spriteURL
+                    pokemon.shinyURL = fetchedPokemon.shinyURL
+                    pokemon.sprite = try await URLSession.shared.data(from: fetchedPokemon.spriteURL).0
+                    pokemon.shiny = try await URLSession.shared.data(from: fetchedPokemon.shinyURL).0
                     
-                    if pokemon.id % 2 == 0 {
-                        pokemon.favorite = true
-                    }
-                    
+            
+        
                     try viewContext.save()
                 }catch {
                     print(error)
                 }
+            }
+            
+            storeSprites()
+        }
+    }
+    
+    private func storeSprites() {
+        Task {
+            do {
+                for pokemon in allPokemon {
+                    
+                    pokemon.sprite = try await URLSession.shared.data(from: pokemon.spriteURL!).0
+                    pokemon.shiny = try await URLSession.shared.data(from: pokemon.shinyURL!).0
+                    
+                    try viewContext.save()
+                }
+            } catch {
+                print(error)
             }
         }
     }
